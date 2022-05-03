@@ -1,2 +1,2 @@
-# duo-speech-vanilla
-# duo-speech-vanilla
+# Duo Speech Chrome Extension
+
