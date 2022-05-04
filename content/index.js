@@ -19,8 +19,10 @@ function startRecognition() {
   recognition.onsoundend = () => {
     isListening = false;
     const img = document.getElementById('img-speech-animated');
-    img.setAttribute('id', 'img-speech');
-    recognition?.stop();
+    if (img !== null) {
+      img?.setAttribute('id', 'img-speech');
+      recognition?.stop();
+    }
   };
 
   recognition.onresult = event => {
@@ -39,7 +41,7 @@ function onClickMic() {
   textarea.value = '';
   isListening = !isListening;
   startRecognition();
-  
+
   if (img) {
     if (isListening)
       img.setAttribute('id', 'img-speech-animated');
