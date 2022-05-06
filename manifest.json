@@ -3,9 +3,6 @@
 	"manifest_version": 3,
 	"version": "2.0",
 	"description": "Speech to text extension",
-	"permissions": [
-		"tabs"
-	],
 	"icons": {
 		"16": "/icons/Icon16.png",
 		"48": "/icons/Icon48.png",
