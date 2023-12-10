@@ -7,27 +7,36 @@ function startRecognition() {
   const textarea = document.querySelector('textarea[lang]');
   const textareaLanguage = textarea.getAttribute('lang');
   if (isListening) {
-    recognition?.stop();
+    recognition?.abort();
+    textarea.value = '';
   }
+  
   recognition = new SpeechRecognition();
-  recognition.continuous = false;
+  recognition.continuous = true;
   recognition.lang = languages[textareaLanguage];
   recognition.interimResults = true;
   recognition.maxAlternatives = 1;
   recognition.start();
 
-  recognition.onsoundend = () => {
+  recognition.onspeechend = () => {
     isListening = false;
+    recognition?.stop();
+
     const img = document.getElementById('img-speech-animated');
     if (img !== null) {
       img?.setAttribute('id', 'img-speech');
-      recognition?.stop();
     }
   };
 
-  recognition.onresult = event => {
-    const result = event.results[0][0]?.transcript;
-    textarea.value = result;
+  recognition.onresult = ({results}) => {
+    const result = Object.values(results).reduce((text, currText) => {
+      if (currText?.isFinal) text += currText[0]?.transcript;
+      return text;
+    }, '');
+
+    if (!!result && (result !== '' || result !== ' ')) {
+      textarea.value = result;
+    }
     var evt = new Event("change", { "bubbles": true, "cancelable": false });
     textarea.dispatchEvent(evt);
   }
@@ -75,5 +84,10 @@ const observer = new MutationObserver(() => {
 });
 
 const target = document.getElementById('root');
+target.addEventListener('keydown', (event) => {
+  if (event.ctrlKey) {
+    document.getElementById("speech").click();
+  }
+});
 const config = { subtree: true, childList: true, characterData: true, };
 observer.observe(target, config);
